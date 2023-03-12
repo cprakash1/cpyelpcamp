@@ -10,7 +10,7 @@ const catchAsync = require('./utils/catchAsync');
 const expressError = require('./utils/expressError');
 const ExpressError = require('./utils/expressError');
 const campgroundSchema = require('./schema');
-
+const Review=require('./model/review')
 
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', {
@@ -63,6 +63,16 @@ app.post('/campground', validateCampground,catchAsync(async (req, res, next) => 
     await camp.save();
     res.redirect(`/campground/${camp._id}`);
 }))
+
+app.post('/campground/:id/reviews',catchAsync(async(req,res)=>{
+    const camp=await Campground.findById(req.params.id);
+    const review= new Review(req.body.review);
+    camp.reviews.push(review);
+    await review.save();
+    await camp.save();
+    res.redirect(`/campground/${req.params.id}`);
+}))
+
 app.get('/campground', catchAsync(async (req, res) => {
     const campground = await Campground.find();
     res.status(200).render('home', { campground, title: "Campground" });
