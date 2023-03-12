@@ -9,7 +9,7 @@ const ejsMate = require('ejs-mate');
 const catchAsync = require('./utils/catchAsync');
 const expressError = require('./utils/expressError');
 const ExpressError = require('./utils/expressError');
-const campgroundSchema = require('./schema');
+const {campgroundSchema,reviewSchema} = require('./schema');
 const Review=require('./model/review')
 
 
@@ -52,6 +52,15 @@ const validateCampground = (req, res, next) => {
     }
 }
 
+const validatereview =(req,res,next)=>{
+    const {error}=reviewSchema.validate(req.body)
+    if(error){
+        const message=error.details.map(el=>el.message).join(',');
+        throw new ExpressError(message,404)
+    }else {
+        next();
+    }
+}
 
 
 app.get('/campground/new', (req, res) => {
@@ -64,7 +73,7 @@ app.post('/campground', validateCampground,catchAsync(async (req, res, next) => 
     res.redirect(`/campground/${camp._id}`);
 }))
 
-app.post('/campground/:id/reviews',catchAsync(async(req,res)=>{
+app.post('/campground/:id/reviews',validatereview,catchAsync(async(req,res)=>{
     const camp=await Campground.findById(req.params.id);
     const review= new Review(req.body.review);
     camp.reviews.push(review);
@@ -78,7 +87,8 @@ app.get('/campground', catchAsync(async (req, res) => {
     res.status(200).render('home', { campground, title: "Campground" });
 }));
 app.get('/campground/:id', catchAsync(async (req, res) => {
-    const camp = await Campground.findById(req.params.id);
+    const camp = await Campground.findById(req.params.id).populate('reviews');
+    // console.log(camp);
     res.status(200).render('show', { camp, title: camp.title });
 }))
 app.get('/campground/:id/edit', catchAsync(async (req, res) => {
