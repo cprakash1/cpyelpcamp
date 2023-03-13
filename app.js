@@ -106,7 +106,13 @@ app.delete('/campground/:id', catchAsync(async (req, res) => {
     await Campground.findByIdAndDelete(req.params.id);
     res.redirect('/campground');
 }));
-
+app.delete('/campground/:id/reviews/:reviewId',catchAsync(async(req,res)=>{
+    // res.send("You have deleted!!!!")
+    const {id,reviewId}=req.params;
+    await Campground.findByIdAndUpdate(id,{$pull:{reviews:reviewId}});
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/campground/${id}`)
+}))
 app.all('*', (req, res, next) => {
     next(new expressError("Page Not Found", 404));
 })
