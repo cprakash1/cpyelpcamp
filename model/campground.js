@@ -19,7 +19,7 @@ const campgroundSchema=new Schema({
 
 //middleware for deleting a campground   => 2 types Pre,post
 campgroundSchema.post('findOneAndDelete',async function (doc){
-    console.log(doc);
+    // console.log(doc);
     if(doc){
         
         await Review.deleteMany({
