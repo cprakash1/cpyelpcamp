@@ -12,7 +12,9 @@ const reviewrouter=require('./routes/review')
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    // useCreateIndex:true
+    // useFindAndModify:true
 });
 const db = mongoose.Connection;
 mongoose.connection.on('error', console.error.bind(console, 'connection error'));
@@ -27,7 +29,7 @@ mongoose.connection.once("open", () => {
 app.set('view engine', 'ejs');
 app.engine('ejs', ejsMate);
 app.set('views', path.join(__dirname, 'views'));
-app.use(express.static(path.join(__dirname, 'static')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
