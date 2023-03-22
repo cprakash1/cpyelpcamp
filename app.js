@@ -9,8 +9,13 @@ const expressError = require('./utils/expressError');
 // const ExpressError = require('./utils/expressError');
 const campgroundrouter=require('./routes/campground')
 const reviewrouter=require('./routes/review')
+const authrouter=require('./routes/auth')
 const session=require('express-session')
 const flash=require('connect-flash')
+const passport=require('passport')
+const localStratigy=require('passport-local')
+const User=require('./model/user')
+
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', {
     useNewUrlParser: true,
@@ -48,20 +53,33 @@ const sessionopt={
 }
 app.use(session(sessionopt))
 app.use(flash())
+app.use(passport.initialize())
+app.use(passport.session())
+passport.use(new localStratigy(User.authenticate()))
+
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
+
+
 
 app.use((req, res, next) => {
     console.log(req.url, req.method);
+    console.log(req.session)
+    // console.log(req.user)
     next();
 })
 
 app.use((req,res,next)=>{
     res.locals.success=req.flash('success')
     res.locals.error=req.flash('error')
+    res.locals.currentUser=req.user;
     next()
 })
 
 app.use('/campground',campgroundrouter)
 app.use('/campground/:id/reviews',reviewrouter)
+app.use('/',authrouter)
 
 app.all('*', (req, res, next) => {
     next(new expressError("Page Not Found", 404));
