@@ -23,8 +23,21 @@ const localStratigy=require('passport-local')
 const User=require('./model/user')
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet=require('helmet');
+const MongoStore=require("connect-mongo");
 
-mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', {
+
+
+app.set('view engine', 'ejs');
+app.engine('ejs', ejsMate);
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
+// const Db_Url='mongodb+srv://root:root@cprakash.rioidal.mongodb.net/?retryWrites=true&w=majority'
+const Db_Url='mongodb://127.0.0.1:27017/yelp-camp';
+// mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', {
+mongoose.connect(Db_Url, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     // strictQuery:true
@@ -40,17 +53,19 @@ mongoose.connection.once("open", () => {
 //  note while using router params of each routes get seperated so if app page contain /home/:id
 // and router page try to access that id then it cannot so in order to access that make mergeparams:true
 
+// const store=new mongoDBStore({
+//     url:Db_Url,
+//     secret:'thisisnotagoodsecret',
+//     touchAfter: 24*3600
+// });
 
-app.set('view engine', 'ejs');
-app.engine('ejs', ejsMate);
-app.set('views', path.join(__dirname, 'views'));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true }))
-app.use(methodOverride('_method'))
+// store.on('error',function(e){
+//     console.log("Session Store Error");
+// })
 
 const sessionopt={
     // name:"ghsdg",
+    store: MongoStore.create({ mongoUrl: Db_Url,touchAfter: 24 * 3600}),
     secret:'thisisnotagoodsecret',
     resave:false,
     saveUnitialized:true,
