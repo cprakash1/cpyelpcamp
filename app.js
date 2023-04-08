@@ -22,6 +22,7 @@ const passport=require('passport')
 const localStratigy=require('passport-local')
 const User=require('./model/user')
 const mongoSanitize = require('express-mongo-sanitize');
+const helmet=require('helmet');
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', {
     useNewUrlParser: true,
@@ -60,6 +61,79 @@ const sessionopt={
         age:1000*60*60*24*7
     }
 }
+
+
+
+app.use(helmet());
+const scriptSrcUrls = [
+    "https://stackpath.bootstrapcdn.com",
+    "https://api.tiles.mapbox.com",
+    "https://api.mapbox.com",
+    "https://kit.fontawesome.com",
+    "https://cdnjs.cloudflare.com",
+    "https://cdn.jsdelivr.net",
+    "https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js"    
+];
+const styleSrcUrls = [
+    "https://kit-free.fontawesome.com",
+    "https://stackpath.bootstrapcdn.com",
+    "https://api.mapbox.com",
+    "https://api.tiles.mapbox.com",
+    "https://fonts.googleapis.com",
+    "https://use.fontawesome.com",
+    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css",
+    "https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css",
+];
+const connectSrcUrls = [
+    "https://api.mapbox.com",
+    "https://*.tiles.mapbox.com",
+    "https://events.mapbox.com",
+    "https://source.unsplash.com/collection/483251",
+];
+const fontSrcUrls = [];
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: [],
+            connectSrc: ["'self'", ...connectSrcUrls],
+            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+            workerSrc: ["'self'", "blob:"],
+            childSrc: ["blob:"],
+            objectSrc: [],
+            imgSrc: [
+                "'self'",
+                "blob:",
+                "data:",
+                "https://res.cloudinary.com/douqbebwk/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
+                "https://images.unsplash.com",
+                "https://source.unsplash.com/collection/483251",
+            ],
+            fontSrc: ["'self'", ...fontSrcUrls],
+        },
+    })
+    );
+    app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
+    app.use(helmet.crossOriginEmbedderPolicy({ policy: "credentialless" }));
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//     next();
+//   });
+// app.use(helmet({     crossOriginResourcePolicy: false,     crossOriginEmbedderPolicy: false,    }));
+// app.use(helmet.crossOriginEmbedderPolicy(false));
+// app.use(helmet.crossOriginOpenerPolicy(false))
+// app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
+
+
+
+
+
+
+
+
+
 app.use(session(sessionopt))
 app.use(flash())
 app.use(passport.initialize())
@@ -70,9 +144,9 @@ passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 
 
-// app.use(mongoSanitize({
-//     replaceWith: '_'
-// }));
+app.use(mongoSanitize({
+    replaceWith: '_'
+}));
 
 
 app.use((req, res, next) => {
