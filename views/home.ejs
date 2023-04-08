@@ -1,4 +1,5 @@
 <%= layout('./layout/boilerplate') %> 
+<div id="map" style="width: 100%; height: 500px;"></div>
     <h1>Yelp Camp !!!</h1>
     <br><br>
     <a href="/campground/new">Add campground</a>
@@ -19,3 +20,8 @@
             </div>
         </div>
     <% } %> 
+        <script>
+            const mapToken="pk.eyJ1IjoiY3ByYWthc2gxIiwiYSI6ImNsZzZpNXBpMjBkZzkzaHFyMm83OGQyN3YifQ.5BnzbS1hsEGKg95hwpbQ7Q";
+            const campground='<%- JSON.stringify(campground) %>';
+        </script>
+    <script src="/javascript/clusterMap.js"></script>

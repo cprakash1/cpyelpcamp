@@ -1,3 +1,9 @@
+// if(process.env.NODE_ENV!=="production"){
+//     require('dotenv').config({path:__dirname+'.env'})
+// }
+
+// console.log(process.env.MAPBOX_TOKEN)
+
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
@@ -15,7 +21,7 @@ const flash=require('connect-flash')
 const passport=require('passport')
 const localStratigy=require('passport-local')
 const User=require('./model/user')
-
+const mongoSanitize = require('express-mongo-sanitize');
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', {
     useNewUrlParser: true,
@@ -41,12 +47,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
+
 const sessionopt={
+    // name:"ghsdg",
     secret:'thisisnotagoodsecret',
     resave:false,
     saveUnitialized:true,
     cookie:{
         httponly:true,
+        // secure:true,
         expires:Date.now()+1000*60*60*24*7,
         age:1000*60*60*24*7
     }
@@ -61,12 +70,16 @@ passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
 
 
+// app.use(mongoSanitize({
+//     replaceWith: '_'
+// }));
 
 
 app.use((req, res, next) => {
     console.log(req.url, req.method);
     // console.log(req.session)
     // console.log(req.user)
+    // console.log(req.query)
     next();
 })
 

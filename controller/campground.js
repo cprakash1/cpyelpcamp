@@ -1,5 +1,8 @@
+// MAPBOX_TOKEN='pk.eyJ1IjoiY3ByYWthc2gxIiwiYSI6ImNsZzZpNXBpMjBkZzkzaHFyMm83OGQyN3YifQ.5BnzbS1hsEGKg95hwpbQ7Q';
 const Campground=require('../model/campground')
-
+const mbxgeocoding=require('@mapbox/mapbox-sdk/services/geocoding')
+// const mapBoxToken=process.env.MAPBOX_TOKEN;
+const geocoder=mbxgeocoding({accessToken:'pk.eyJ1IjoiY3ByYWthc2gxIiwiYSI6ImNsZzZpNXBpMjBkZzkzaHFyMm83OGQyN3YifQ.5BnzbS1hsEGKg95hwpbQ7Q'});
 module.exports.renderIndexPage=async (req, res) => {
     console.log(req.url)
     const campground = await Campground.find();
@@ -10,8 +13,16 @@ module.exports.createCampground=async (req, res, next) => {
     const { title, location, price, description, image } = req.body;
     const camp = await new Campground({ title, location, price, description, image });
     camp.author=req.user._id;
-    await camp.save();
     req.flash('success','Successfully creating campground!')
+    const geoData=await geocoder.forwardGeocode({
+        query: location,
+        limit: 1
+    })
+    .send()
+    camp.geometry=geoData.body.features[0].geometry;
+    console.log(geoData.body.features[0].geometry)
+    await camp.save();
+    // console.log(camp);
     res.redirect(`/campground/${camp._id}`);
 }
 

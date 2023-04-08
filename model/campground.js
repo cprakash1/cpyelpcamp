@@ -2,9 +2,24 @@ const mongoose=require('mongoose');
 const Review=require('./review');
 const Schema=mongoose.Schema;
 
+// making virtual properties to be transferrable over javascript
+//if not used then only accessable to the rendered page
+const opts = { toJSON: { virtuals: true } };
+
 const campgroundSchema=new Schema({
     title:String,
     image:String,
+    geometry:{
+        type:{
+            type:String,
+            enum:['Point'],
+            required:true
+        },
+        coordinates:{
+            type:[Number],
+            required:true
+        }
+    },
     price:Number,
     description:String,
     location:String,
@@ -19,7 +34,15 @@ const campgroundSchema=new Schema({
         }
     ]
 
-});
+},opts);
+
+//setting up virtual properties
+campgroundSchema.virtual('properties.popUpMarkup').get(function(){
+    let p=`/campground/${this._id}`
+    let z= `<strong><h4><a href=${p}>${this.title}</a></h4><strong><p>${this.description.substring(0,20)}</p>`
+    return z
+})
+
 
 //middleware for deleting a campground   => 2 types Pre,post
 campgroundSchema.post('findOneAndDelete',async function (doc){
