@@ -26,10 +26,10 @@ module.exports.isAuthor=async(req,res,next)=>{
 }
 
 module.exports.validateCampground = (req, res, next) => {
-    const { title, location, price, description, image } = req.body;
+    const { title, location, price, description} = req.body;
     // if (!title || !location || !price || !description || !image) throw new ExpressError('Invalid Campground Data', 400);
     
-    const { error } = campgroundSchema.validate({ title, price, image, description, location });
+    const { error } = campgroundSchema.validate({ title, price, description, location});
     // console.log(error);
     if (error) {
         const message = error.details.map(el => el.message).join(',');

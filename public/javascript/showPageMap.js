@@ -1,4 +1,5 @@
-const myObj = JSON.parse(camp);
+// console.log(camp.geometry.coordinates);
+const myObj = (camp);
 mapboxgl.accessToken =
   "pk.eyJ1IjoiY3ByYWthc2gxIiwiYSI6ImNsZzZpNXBpMjBkZzkzaHFyMm83OGQyN3YifQ.5BnzbS1hsEGKg95hwpbQ7Q";
 const map = new mapboxgl.Map({

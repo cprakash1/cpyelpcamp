@@ -3,43 +3,59 @@
 <div class="row mb-4">
   <div class="col-6">
     <div class="card mb-3">
-        <img src="<%= camp.image %>" class="card-img-top" alt="..." />
-        <div class="card-body">
+      <div id="campImageControls" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <% camp.image.forEach((im,id)=>{%>
+            <div class="carousel-item <%= id===0?"active":"" %>">
+              <img src="<%= im.url %>" class="d-block w-100" alt="...">
+            </div>
+          <%}) %>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#campImageControls" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#campImageControls" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      <div class="card-body">
         <h5 class="card-title"><%= camp.title %></h5>
         <p class="card-text"><%= camp.description %></p>
-    </div>
+      </div>
       <ul class="list-group list-group-flush">
-          <li class="list-group-item text-muted"><%= camp.location %></li>
-          <li class="list-group-item">
-              Submitted by <%= camp.author.username %>
+        <li class="list-group-item text-muted"><%= camp.location %></li>
+        <li class="list-group-item">
+          Submitted by <%= camp.author.username %>
         </li>
         <li class="list-group-item">$<%= camp.price %>/per night</li>
-    </ul>
-    <% if(currentUser &&camp.author.equals(currentUser._id)) {%>
+      </ul>
+      <% if(currentUser &&camp.author.equals(currentUser._id)) {%>
       <div class="card-body">
-          <a href="/campground/<%= camp._id %>/edit" class="btn btn-info">EDIT</a>
-          <form
+        <a href="/campground/<%= camp._id %>/edit" class="btn btn-info">EDIT</a>
+        <form
           class="d-inline"
           action="/campground/<%= camp._id %>?_method=DELETE"
           method="post"
-          >
+        >
           <button class="btn btn-danger">Delete</button>
         </form>
+      </div>
+      <% } %>
+      <div class="card-footer text-muted">2 days ago</div>
     </div>
-    <% } %>
-    <div class="card-footer text-muted">2 days ago</div>
-</div>
-</div>
-<div class="col-6">
-    <div id="map" style="height:400px;"></div>
+  </div>
+  <div class="col-6">
+    <div id="map" style="height: 400px"></div>
     <% if(currentUser) {%>
-        <div class="mb-3">
-            <form
-            action="/campground/<%= camp._id %>/reviews"
-            method="post"
-            class="needs-validation"
-            novalidate
-            >
+    <div class="mb-3">
+      <form
+        action="/campground/<%= camp._id %>/reviews"
+        method="post"
+        class="needs-validation"
+        novalidate
+      >
         <div class="mb-3">
           <h2>Leave a Review</h2>
           <fieldset class="starability-basic">
@@ -133,6 +149,6 @@
   </div>
 </div>
 <script>
-    const camp='<%- JSON.stringify(camp) %>'
+  const camp = <%- JSON.stringify(camp) %>;
 </script>
 <script src="/javascript/showPageMap.js"></script>

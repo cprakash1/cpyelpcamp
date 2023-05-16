@@ -1,10 +1,10 @@
 <%= layout('/layout/boilerplate') %>
 
   <div class="row">
-    <h1 class="text-center">New Campground</h1>
+    <h1 class="text-center">Edit Campground</h1>
     <div class="col-6 offset-3 mb-4">
       <form action="/campground/<%= camp._id %>?_method=PUT" method="post" class="form mb-4 needs-validation"
-        novalidate>
+        novalidate enctype="multipart/form-data">
         <div class="mb-3">
           <label for="title" class="form-label">Title</label>
           <input type="text" name="title" id="title" class="form-control" value="<%= camp.title %>" required>
@@ -26,14 +26,15 @@
           </div>
         </div>
         <div class="mb-3">
-          <label for="image" class="form-label">image</label>
+          <!-- <label for="image" class="form-label">image</label>
           <input type="text" name="image" id="image" class="form-control" value="<%= camp.image %>" required>
           <div class="valid-feedback">
             Looks good!
           </div>
           <div class="invalid-feedback">
             Please provide a valid data.
-          </div>
+          </div> -->
+          <input type="file" name="image" id="image" multiple>
         </div>
         <div class="mb-3">
           <label for="price" class="form-label">price</label>
@@ -59,6 +60,18 @@
           <div class="invalid-feedback">
             Please provide a valid data.
           </div>
+        </div>
+        <div >
+          <% camp.image.forEach((value,id)=>{%>
+            <div class="block">
+            <img src="<%=value.thumbnail%>" alt="<% value %>" class="img-thumbnail block">
+            <% console.log(value.url) %>
+            <div class="form-check-inline">
+            <input type="checkbox" name="deleteimage[]" id="imag-<%= id %>" value="<%= value.filename %>">
+          </div>
+            <label for="imag-<%= id %>" >Delete?  </label>
+          </div>
+          <%}) %>
         </div>
         <button class="btn btn-info">Update campground</button>
       </form>

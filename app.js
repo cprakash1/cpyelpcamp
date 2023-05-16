@@ -1,8 +1,6 @@
-// if(process.env.NODE_ENV!=="production"){
-//     require('dotenv').config({path:__dirname+'.env'})
-// }
-
-// console.log(process.env.MAPBOX_TOKEN)
+if(process.env.NODE_ENV!=="production"){
+    require('dotenv').config()
+}
 
 const express = require('express');
 const app = express();
@@ -120,7 +118,7 @@ app.use(
                 "'self'",
                 "blob:",
                 "data:",
-                "https://res.cloudinary.com/douqbebwk/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
+                "https://res.cloudinary.com/dhtxywza0/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
                 "https://images.unsplash.com",
                 "https://source.unsplash.com/collection/483251",
             ],

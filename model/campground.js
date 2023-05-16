@@ -6,9 +6,16 @@ const Schema=mongoose.Schema;
 //if not used then only accessable to the rendered page
 const opts = { toJSON: { virtuals: true } };
 
+const ImageSchema = new Schema({
+    url:String,
+    filename:String
+})
+ImageSchema.virtual('thumbnail').get (function(){
+    return this.url.replace('/upload','/upload/w_200');
+})
 const campgroundSchema=new Schema({
     title:String,
-    image:String,
+    image:[ImageSchema],
     geometry:{
         type:{
             type:String,
