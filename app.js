@@ -33,7 +33,9 @@ app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 // const Db_Url='mongodb+srv://root:root@cprakash.rioidal.mongodb.net/?retryWrites=true&w=majority'
-const Db_Url='mongodb://127.0.0.1:27017/yelp-camp';
+const Db_Url = "mongodb+srv://cprakash:cpprakash@cluster0.i03devl.mongodb.net/?retryWrites=true&w=majority";
+
+// const Db_Url='mongodb://127.0.0.1:27017/yelp-camp';
 // mongoose.connect('mongodb://127.0.0.1:27017/yelp-camp', {
 mongoose.connect(Db_Url, {
     useNewUrlParser: true,

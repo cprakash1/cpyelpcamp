@@ -13,7 +13,7 @@ module.exports.renderIndexPage=async (req, res) => {
 module.exports.createCampground=async (req, res, next) => {
     const { title, location, price, description} = req.body;
     const image=req.files.map(f=>({url:f.path,filename:f.filename}));
-    console.log(image);
+    // console.log(image);
     const camp = await new Campground({ title, location, price, description, image });
     camp.author=req.user._id;
     req.flash('success','Successfully creating campground!')
@@ -23,7 +23,7 @@ module.exports.createCampground=async (req, res, next) => {
     })
     .send()
     camp.geometry=geoData.body.features[0].geometry;
-    console.log(geoData.body.features[0].geometry)
+    // console.log(geoData.body.features[0].geometry)
     await camp.save();
     // console.log(camp);
     res.redirect(`/campground/${camp._id}`);
